@@ -1,0 +1,58 @@
+name: Deploy API Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      HOST: root@77.105.167.117
+      DEPLOY_DIRECTORY: /root/weatherbot
+      ENV_FILE_PATH: /root/weatherbot/.env
+      OPENWEATHER_TOKEN: ${{ secrets.OPENWEATHER_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+
+      - name: Build binary
+        run: go build -o server .
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 77.105.167.117 >> ~/.ssh/known_hosts
+
+      - name: Deploy to VM via rsync
+        run: |
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > deploy_key.pem
+          chmod 600 deploy_key.pem
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
+          rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./server ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/server
+
+      - name: Create .env file on server
+        run: |
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
+          echo 'OPENWEATHER_TOKEN=${{ env.OPENWEATHER_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
+          echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
+          chmod 600 ${{ env.ENV_FILE_PATH }}"
+
+      - name: Deploy to server
+        run: |
+          ssh root@77.105.167.117 'mkdir -p /root/weatherbot'
+          scp server root@77.105.167.117:/root/weatherbot/server
+          ssh root@77.105.167.117 '
+            pkill server || true
+            nohup /root/weatherbot/server > /root/weatherbot/server.log 2>&1 &
+          '
