@@ -1,9 +1,8 @@
 name: Deploy App
 
+# ❌ Автоматический запуск отключён (нужно запускать вручную через GitHub Actions)
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -13,7 +12,6 @@ jobs:
       HOST: root@77.105.167.117
       DEPLOY_DIRECTORY: /root/weatherbot
       ENV_FILE_PATH: /root/weatherbot/.env
-      OPENWEATHER_TOKEN: ${{ secrets.OPENWEATHER_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -34,25 +32,23 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H 77.105.167.117 >> ~/.ssh/known_hosts
 
-      - name: Deploy to VM via rsync
+      - name: Deploy binary via rsync
         run: |
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
           rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./weatherbot ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/weatherbot
 
-      - name: Create .env file on server
+      - name: Upload .env file to server
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
-          echo 'OPENWEATHER_TOKEN=${{ env.OPENWEATHER_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
-          echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
+          echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
+          echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
           chmod 600 ${{ env.ENV_FILE_PATH }}"
 
-      - name: Deploy to weatherbot
+      - name: Restart bot on server
         run: |
-          ssh root@77.105.167.117 'mkdir -p /root/weatherbot'
-          scp weatherbot root@77.105.167.117:/root/weatherbot/weatherbot
-          ssh root@77.105.167.117 '
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} '
             pkill weatherbot || true
             nohup /root/weatherbot/weatherbot > /root/weatherbot/weatherbot.log 2>&1 &
           '
