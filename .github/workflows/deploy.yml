@@ -45,7 +45,7 @@ jobs:
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
           echo 'OPENWEATHER_TOKEN=${{ env.OPENWEATHER_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
           echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
-          echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >>> ${{ env.OPENWEATHER_TOKEN }} && \
+          echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >> ${{ env.OPENWEATHER_TOKEN }} && \
           chmod 600 ${{ env.ENV_FILE_PATH }}"
 
       - name: Deploy to weatherbot
