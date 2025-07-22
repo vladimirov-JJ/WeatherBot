@@ -40,14 +40,13 @@ jobs:
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
           rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./weatherbot ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/weatherbot
 
-      - name: Create .env file on weatherbot
+      - name: Create .env file on server
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
-          touch ${{ env.ENV_FILE_PATH }} && \
-          chmod 600 ${{ env.ENV_FILE_PATH }} && \
           echo 'OPENWEATHER_TOKEN=${{ env.OPENWEATHER_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
           echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
           echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >>> ${{ env.OPENWEATHER_TOKEN }} && \
+          chmod 600 ${{ env.ENV_FILE_PATH }}"
 
       - name: Deploy to weatherbot
         run: |
