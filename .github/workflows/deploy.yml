@@ -1,11 +1,9 @@
 name: Deploy App
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to deploy'
-        required: true
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -15,7 +13,6 @@ jobs:
       HOST: root@77.105.167.117
       DEPLOY_DIRECTORY: /root/weatherbot
       ENV_FILE_PATH: /root/weatherbot/.env
-      OPENWEATHER_TOKEN: ${{ secrets.OPENWEATHER_TOKEN }}
 
     steps:
       - name: Checkout repository
@@ -46,9 +43,11 @@ jobs:
       - name: Create .env file on weatherbot
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
+          touch ${{ env.ENV_FILE_PATH }} && \
+          chmod 600 ${{ env.ENV_FILE_PATH }} && \
           echo 'OPENWEATHER_TOKEN=${{ env.OPENWEATHER_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
           echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
-          chmod 600 ${{ env.ENV_FILE_PATH }}"
+          echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >>> ${{ env.OPENWEATHER_TOKEN }} && \
 
       - name: Deploy to weatherbot
         run: |
