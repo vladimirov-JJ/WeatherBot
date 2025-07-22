@@ -1,3 +1,1 @@
 # weatherbot
-test
-
