@@ -1,9 +1,11 @@
-name: Deploy API Server
+name: Deploy App
 
 on:
-  push:
-    branches:
-      - cmd/weather-bot/main
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to deploy'
+        required: true
 
 jobs:
   deploy:
@@ -25,7 +27,7 @@ jobs:
           go-version: 1.21
 
       - name: Build binary
-        run: go build -o server .
+        run: go build -o weatherbot ./cmd/weatherbot
 
       - name: Setup SSH
         run: |
@@ -39,20 +41,20 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
-          rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./server ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/server
+          rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./weatherbot ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/weatherbot
 
-      - name: Create .env file on server
+      - name: Create .env file on weatherbot
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
           echo 'OPENWEATHER_TOKEN=${{ env.OPENWEATHER_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
           echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
           chmod 600 ${{ env.ENV_FILE_PATH }}"
 
-      - name: Deploy to server
+      - name: Deploy to weatherbot
         run: |
           ssh root@77.105.167.117 'mkdir -p /root/weatherbot'
-          scp server root@77.105.167.117:/root/weatherbot/server
+          scp weatherbot root@77.105.167.117:/root/weatherbot/weatherbot
           ssh root@77.105.167.117 '
-            pkill server || true
-            nohup /root/weatherbot/server > /root/weatherbot/server.log 2>&1 &
+            pkill weatherbot || true
+            nohup /root/weatherbot/weatherbot > /root/weatherbot/weatherbot.log 2>&1 &
           '
