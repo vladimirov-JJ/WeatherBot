@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
+	err := godotenv.Load("/root/weatherbot/.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

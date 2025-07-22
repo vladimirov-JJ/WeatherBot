@@ -13,6 +13,7 @@ jobs:
       HOST: root@77.105.167.117
       DEPLOY_DIRECTORY: /root/weatherbot
       ENV_FILE_PATH: /root/weatherbot/.env
+      OPENWEATHER_TOKEN: ${{ secrets.OPENWEATHER_TOKEN }}
 
     steps:
       - name: Checkout repository
