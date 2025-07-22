@@ -9,7 +9,7 @@ func mainMenu() tgbotapi.InlineKeyboardMarkup {
 			tgbotapi.NewInlineKeyboardButtonData("Отправить геолокацию", "send_location"),
 		),
 		tgbotapi.NewInlineKeyboardRow(
-			tgbotapi.NewInlineKeyboardButtonURL("Открыть сайт", "https://vk.com"),
+			tgbotapi.NewInlineKeyboardButtonURL("Открыть сайт", "https://t.me/ivanvladimirov"),
 		),
 	)
 }

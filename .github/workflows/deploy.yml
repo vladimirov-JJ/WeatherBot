@@ -1,8 +1,11 @@
 name: Deploy App
 
-# ❌ Автоматический запуск отключён (нужно запускать вручную через GitHub Actions)
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to deploy'
+        required: true
 
 jobs:
   deploy:
