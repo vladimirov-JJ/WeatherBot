@@ -38,15 +38,15 @@ func main() {
 
 	_, err = storage.SaveURL("https://google.com", "google")
 	if err != nil {
-		log.Fatalf("error storage: %s", err)
+		log.Fatalf("error storageee: %s", err)
 		return
 	}
 
-	_, err = storage.SaveURL("https://google.com", "google")
-	if err != nil {
-		log.Fatalf("error storage: %s", err)
-		return
-	}
+	// _, err = storage.SaveURL("https://google.com", "google")
+	// if err != nil {
+	// 	log.Fatalf("error storage: %s", err)
+	// 	return
+	// }
 
 	botHandler.Start()
 }
