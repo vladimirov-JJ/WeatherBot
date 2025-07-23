@@ -26,7 +26,7 @@ func (h *Handler) Start() {
 		if update.Message != nil {
 			h.Callback(update)
 		} else if update.CallbackQuery != nil {
-			h.MainMenuCallBack(update)
+			h.CallbackQuery(update)
 		}
 	}
 }

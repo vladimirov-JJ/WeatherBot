@@ -2,12 +2,41 @@ package handler
 
 import (
 	"fmt"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/p1relly/weatherbot/internal/formatter"
 	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 var userState = make(map[int64]string)
+
+func (h *Handler) CallbackQuery(update tgbotapi.Update) {
+	callback := update.CallbackQuery
+	chatID := callback.Message.Chat.ID
+	data := callback.Data
+
+	switch {
+	case data == "enter_city":
+		userState[chatID] = "waiting_city"
+		h.bot.Send(tgbotapi.NewMessage(chatID, "Введи название города:"))
+
+	case data == "send_location":
+		userState[chatID] = "waiting_location"
+		h.bot.Send(tgbotapi.NewMessage(chatID, "Отправь координаты:"))
+
+	case strings.HasPrefix(data, "copy_coords:"):
+		coords := strings.TrimPrefix(data, "copy_coords:")
+		msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("📌 Координаты:\n`%s`", coords))
+		msg.ParseMode = "Markdown"
+		h.bot.Send(msg)
+
+	default:
+		h.bot.Send(tgbotapi.NewMessage(chatID, "Неизвестное действие 🤔"))
+	}
+
+	h.bot.Request(tgbotapi.NewCallback(callback.ID, ""))
+}
 
 func (h *Handler) Callback(update tgbotapi.Update) {
 	if update.CallbackQuery != nil {
@@ -33,7 +62,7 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 			return
 		}
 
-		msg := message(chatID, weather)
+		msg := messageWithCoordinates(chatID, weather)
 		h.bot.Send(msg)
 
 	case "waiting_location":
@@ -46,17 +75,15 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 			return
 		}
 
-		msg := message(chatID, weather)
+		msg := messageWithCoordinates(chatID, weather)
 		h.bot.Send(msg)
 	}
 
-	menuMsg := tgbotapi.NewMessage(chatID, "Выберите действие:")
-	menuMsg.ReplyMarkup = mainMenu()
-	h.bot.Send(menuMsg)
+	h.mainMenu(chatID)
 }
 
-func message(chatID int64, weather openweather.WeatherResponse) tgbotapi.MessageConfig {
-	msgWeather := MessageWeather(weather)
+func messageWithCoordinates(chatID int64, weather openweather.WeatherResponse) tgbotapi.MessageConfig {
+	msgWeather := formatter.MessageWeather(weather)
 	msg := tgbotapi.NewMessage(chatID, msgWeather)
 	msg.ParseMode = "Markdown"
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(
