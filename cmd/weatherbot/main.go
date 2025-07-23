@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/p1relly/weatherbot/internal/handler"
 	"github.com/p1relly/weatherbot/internal/openweather"
+	"github.com/p1relly/weatherbot/internal/storage/sqlite"
 )
 
 func main() {
@@ -28,6 +29,24 @@ func main() {
 	owClient := openweather.New(os.Getenv("OPENWEATHER_TOKEN"))
 
 	botHandler := handler.New(bot, owClient)
+
+	sqliteStoragePath := "./storage/storage.db"
+	storage, err := sqlite.New(sqliteStoragePath)
+	if err != nil {
+		log.Fatalf("error storage: %s", err)
+	}
+
+	_, err = storage.SaveURL("https://google.com", "google")
+	if err != nil {
+		log.Fatalf("error storage: %s", err)
+		return
+	}
+
+	_, err = storage.SaveURL("https://google.com", "google")
+	if err != nil {
+		log.Fatalf("error storage: %s", err)
+		return
+	}
 
 	botHandler.Start()
 }
