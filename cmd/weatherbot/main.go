@@ -30,10 +30,10 @@ func main() {
 
 	botHandler := handler.New(bot, owClient)
 
-	sqliteStoragePath := "./storage/storage.db"
+	sqliteStoragePath := "/root/weatherbot/"
 	storage, err := sqlite.New(sqliteStoragePath)
 	if err != nil {
-		log.Fatalf("error storage: %s", err)
+		log.Fatalf("error storaggggge: %s", err)
 	}
 
 	_, err = storage.SaveURL("https://google.com", "google")
