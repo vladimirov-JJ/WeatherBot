@@ -1,10 +1,10 @@
-package format
+package handler
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/p1relly/weatherbot/clients/openweather"
+	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 func unixToTime(unixTime int, timezoneOffset int) string {

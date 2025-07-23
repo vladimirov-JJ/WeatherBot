@@ -6,8 +6,8 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
-	"github.com/p1relly/weatherbot/clients/openweather"
-	"github.com/p1relly/weatherbot/handler"
+	"github.com/p1relly/weatherbot/internal/handler"
+	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 func main() {

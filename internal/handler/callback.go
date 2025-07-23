@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/p1relly/weatherbot/clients/openweather"
-	"github.com/p1relly/weatherbot/handler/format"
+	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 var userState = make(map[int64]string)
@@ -57,7 +56,7 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 }
 
 func message(chatID int64, weather openweather.WeatherResponse) tgbotapi.MessageConfig {
-	msgWeather := format.MessageWeather(weather)
+	msgWeather := MessageWeather(weather)
 	msg := tgbotapi.NewMessage(chatID, msgWeather)
 	msg.ParseMode = "Markdown"
 	msg.ReplyMarkup = tgbotapi.NewInlineKeyboardMarkup(

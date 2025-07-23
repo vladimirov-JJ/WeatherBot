@@ -2,7 +2,7 @@ package handler
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/p1relly/weatherbot/clients/openweather"
+	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 type Handler struct {
@@ -26,7 +26,7 @@ func (h *Handler) Start() {
 		if update.Message != nil {
 			h.Callback(update)
 		} else if update.CallbackQuery != nil {
-			h.HandleCallback(update)
+			h.MainMenuCallBack(update)
 		}
 	}
 }
