@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/mattn/go-sqlite3"
 	"github.com/p1relly/weatherbot/internal/storage"
 )
 
@@ -33,6 +34,9 @@ func New(storagePath string) (*Storage, error) {
 
 	_, err = stmt.Exec()
 	if err != nil {
+		if sqliteErr, ok := err.(sqlite3.Error); ok && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
+			return nil, fmt.Errorf("%s: %w", op, storage.ErrURLExist)
+		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
