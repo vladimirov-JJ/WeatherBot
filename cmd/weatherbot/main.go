@@ -30,7 +30,7 @@ func main() {
 
 	botHandler := handler.New(bot, owClient)
 
-	sqliteStoragePath := "/root/weatherbot/"
+	sqliteStoragePath := "/root/weatherbot/storage.db"
 	storage, err := sqlite.New(sqliteStoragePath)
 	if err != nil {
 		log.Fatalf("error storaggggge: %s", err)
