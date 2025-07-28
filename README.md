@@ -37,5 +37,4 @@
 
 3. Соберите и запустите бота:
    ```bash
-   go build -o weatherbot .
-   ./weatherbot
+   go build -o weatherbot
