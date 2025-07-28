@@ -52,7 +52,7 @@ func MessageWeather(weather openweather.WeatherResponse) string {
 
 💨 Ветер: %s (%d°), %.1f м/с (порывы до %.1f м/с)
 
-🌫️ Видимость: %d/1000 км
+🌫️ Видимость: %d км
 🌧️ Осадки за 1ч: %.2f мм
 
 🌅 Восход: %s
@@ -77,7 +77,7 @@ func MessageWeather(weather openweather.WeatherResponse) string {
 		weather.Wind.Speed,
 		weather.Wind.Gust,
 
-		weather.Visibility,
+		weather.Visibility/1000, // m -> km
 		weather.Rain.OneH,
 
 		unixToTime(weather.Sys.Sunrise, weather.Timezone),

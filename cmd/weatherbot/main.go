@@ -8,10 +8,12 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/p1relly/weatherbot/internal/handler"
 	"github.com/p1relly/weatherbot/internal/openweather"
+	"github.com/p1relly/weatherbot/internal/storage/sqlite"
 )
 
 func main() {
-	err := godotenv.Load("/root/weatherbot/.env")
+	// err := godotenv.Load("/root/weatherbot/.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -26,28 +28,15 @@ func main() {
 
 	owClient := openweather.New(os.Getenv("OPENWEATHER_TOKEN"))
 
-	botHandler := handler.New(bot, owClient)
+	// sqliteStoragePath := "/root/weatherbot/storage/storage.db"
+	sqliteStoragePath := "./storage/storage.db"
+	db, err := sqlite.New(sqliteStoragePath)
+	if err != nil {
+		log.Fatalf("error storage: %s", err)
+	}
+	// defer dbb.Close()
 
-	/*
-		sqliteStoragePath := "./storage/storage.db"
-		// sqliteStoragePath := "/root/weatherbot/storage/storage.db"
-		storage, err := sqlite.New(sqliteStoragePath)
-		if err != nil {
-			log.Fatalf("error storaggggge: %s", err)
-		}
-
-		_, err = storage.SaveURL("https://google.com", "google")
-		if err != nil {
-			log.Fatalf("error storageee: %s", err)
-			return
-		}
-
-		_, err = storage.SaveURL("https://google.com", "google")
-		if err != nil {
-			log.Fatalf("error storage: %s", err)
-			return
-		}
-	*/
+	botHandler := handler.New(bot, owClient, db)
 
 	botHandler.Start()
 }

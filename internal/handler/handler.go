@@ -3,17 +3,20 @@ package handler
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/p1relly/weatherbot/internal/openweather"
+	"github.com/p1relly/weatherbot/internal/storage/sqlite"
 )
 
 type Handler struct {
 	bot      *tgbotapi.BotAPI
 	owClient *openweather.OpenWeatherClient
+	db       *sqlite.Storage
 }
 
-func New(bot *tgbotapi.BotAPI, owClient *openweather.OpenWeatherClient) *Handler {
+func New(bot *tgbotapi.BotAPI, owClient *openweather.OpenWeatherClient, db *sqlite.Storage) *Handler {
 	return &Handler{
 		bot:      bot,
 		owClient: owClient,
+		db:       db,
 	}
 }
 
