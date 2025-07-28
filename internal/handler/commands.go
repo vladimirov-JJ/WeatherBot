@@ -2,11 +2,14 @@ package handler
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/p1relly/weatherbot/internal/formatter"
+	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 var userState = make(map[int64]string)
@@ -173,7 +176,7 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 	h.mainMenu(chatID)
 }
 
-func (h *Handler) DroneRecommendations(chatID, userID int64, text *string) {
+func (h *Handler) DroneRecommendations(chatID, userID int64, text *string, weather *openweather.WeatherResponse) {
 	drone, err := h.db.ListDrone(userID)
 	if err != nil {
 		h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения списка БВС"))
@@ -182,8 +185,9 @@ func (h *Handler) DroneRecommendations(chatID, userID int64, text *string) {
 
 	var recommendations string
 	for _, d := range drone {
-		if d.Weight < 800 {
-			recommendations += fmt.Sprintf("[⚠️] БВС %s не рекомендуется к полёту\n", d.Name)
+		R := flightRisk(d.Weight, weather, time.Now())
+		if R >= 0.4 {
+			recommendations += fmt.Sprintf("[⚠️] БВС %s не рекомендован к полёту [%.2f]\n", d.Name, R)
 		}
 	}
 	if recommendations != "" {
@@ -200,7 +204,7 @@ func (h *Handler) Message(chatID, userID int64, Lat, Lon float64) {
 
 	text := formatter.MessageWeather(weather)
 
-	h.DroneRecommendations(chatID, userID, &text)
+	h.DroneRecommendations(chatID, userID, &text, &weather)
 
 	msg := tgbotapi.NewMessage(chatID, text)
 	msg.ParseMode = "Markdown"
@@ -215,4 +219,56 @@ func (h *Handler) Message(chatID, userID int64, Lat, Lon float64) {
 	)
 
 	h.bot.Send(msg)
+}
+
+func flightRisk(mGrams int, weather *openweather.WeatherResponse, now time.Time) float64 {
+	mRef := 1000.0
+	k, γ := 9.5, 0.7
+	Wthr := k * math.Pow(float64(mGrams)/mRef, γ)
+	Gthr := 1.2 * Wthr
+
+	var w float64
+	if weather.Wind.Speed <= Wthr {
+		w = 0
+	} else {
+		w = (weather.Wind.Speed - Wthr) / Wthr
+		if w > 1 {
+			w = 1
+		}
+	}
+
+	var g float64
+	if weather.Wind.Gust <= Gthr {
+		g = 0
+	} else {
+		g = (weather.Wind.Gust - Gthr) / Gthr
+		if g > 1 {
+			g = 1
+		}
+	}
+
+	p := math.Min(weather.Rain.OneH/5.0, 1)
+	v := 1 - math.Min(float64(weather.Visibility)/2000.0, 1)
+
+	Topt, Trange := 17.5, 12.5
+	var tn float64
+	if weather.Main.Temp >= Topt-Trange && weather.Main.Temp <= Topt+Trange {
+		tn = 0
+	} else {
+		tn = math.Min(math.Abs(weather.Main.Temp-Topt)/Trange, 1)
+	}
+
+	var d float64
+	hour := now.Hour()
+	switch {
+	case hour >= 6 && hour < 18:
+		d = 0
+	case hour >= 18 && hour < 20:
+		d = 0.5
+	default:
+		d = 1
+	}
+
+	R := 0.35*w + 0.15*g + 0.20*p + 0.10*v + 0.05*tn + 0.05*d
+	return R
 }
