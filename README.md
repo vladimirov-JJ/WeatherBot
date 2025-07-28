@@ -3,13 +3,14 @@
 ![GitHub package.json version](https://img.shields.io/badge/version-1.0.3-blue)
 ![Go](https://img.shields.io/badge/go-1.24.2-blue)
 ![Telegram Bot](https://img.shields.io/badge/telegram_bot-blueviolet)
+![Pet Project](https://img.shields.io/badge/pet--project-personal-brightgreen)
 
 ## Описание
 **WeatherBot** — это простой Telegram‑бот, который позволяет:
 - Узнавать текущую погоду по названию города или отправленной геопозиции;
-- Проверять совместимость полётов для разных моделей дронов на основе базы данных.  
+- Проверять совместимость полётов для разных моделей дронов на основе полученной погоды и характеристиках дрона.  
 
-Проект написан на Golang, использует Telegram Bot API и внешнее Weather API, а также встроенную SQLite‑базу данных для хранения информации о дронах.
+Проект написан на Golang, использует Telegram Bot API и внешнее [OpenWeather](https://openweathermap.org/) API, а также встроенную SQLite‑базу данных для хранения информации о дронах.
 
 ## Возможности
 - Получение прогноза погоды (температура, влажность, скорость ветра и т. д.).
@@ -26,7 +27,7 @@
 
 1. Клонируйте репозиторий:
    ```bash
-   git clone https://github.com/p1Relly/weatherbot.git
+   git clone https://github.com/vladimirov-JJ/weatherbot.git
    cd weatherbot
 
 2. Создайте ключи в github: (settings -> secrets and variables)
