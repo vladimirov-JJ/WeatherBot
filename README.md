@@ -1,8 +1,8 @@
 # WeatherBot
 
-![GitHub package.json version](https://img.shields.io/badge/version-1.0.0-blue)
-![Python](https://img.shields.io/badge/python-3.8%2B-green)
-![Telegram Bot](https://img.shields.io/badge/telegram-bot-blueviolet)
+![GitHub package.json version](https://img.shields.io/badge/version-1.0.3-blue)
+![Go](https://img.shields.io/badge/go-1.24.2-blue)
+![Telegram Bot](https://img.shields.io/badge/telegram_bot-blueviolet)
 
 ## Описание
 **WeatherBot** — это простой Telegram‑бот, который позволяет:
