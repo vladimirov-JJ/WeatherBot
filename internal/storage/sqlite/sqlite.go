@@ -17,7 +17,7 @@ func New(storagePath string) (*Storage, error) {
 
 	db, err := sql.Open("sqlite3", storagePath)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: Open: %w", op, err)
 	}
 
 	/*
@@ -41,7 +41,7 @@ func New(storagePath string) (*Storage, error) {
 		);
 	`)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: Prepare: %w", op, err)
 	}
 
 	_, err = stmt.Exec()
@@ -49,7 +49,7 @@ func New(storagePath string) (*Storage, error) {
 		if sqliteErr, ok := err.(sqlite3.Error); ok && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
 			return nil, fmt.Errorf("%s: %w", op, storage.ErrURLExist)
 		}
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: Exec: %w", op, err)
 	}
 
 	stmt, err = db.Prepare(`
@@ -62,7 +62,7 @@ func New(storagePath string) (*Storage, error) {
 		);
 	`)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: Prepare: %w", op, err)
 	}
 
 	_, err = stmt.Exec()
@@ -70,7 +70,7 @@ func New(storagePath string) (*Storage, error) {
 		if sqliteErr, ok := err.(sqlite3.Error); ok && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
 			return nil, fmt.Errorf("%s: %w", op, storage.ErrURLExist)
 		}
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: Exec: %w", op, err)
 	}
 
 	return &Storage{db: db}, nil
