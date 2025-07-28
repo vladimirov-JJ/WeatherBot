@@ -28,7 +28,7 @@ func main() {
 
 	owClient := openweather.New(os.Getenv("OPENWEATHER_TOKEN"))
 
-	sqliteStoragePath := "/root/weatherbot/storage/storage.db"
+	sqliteStoragePath := "/root/weatherbot/storage/storage.db" //
 	// sqliteStoragePath := "./storage/storage.db"
 	db, err := sqlite.New(sqliteStoragePath)
 	if err != nil {
