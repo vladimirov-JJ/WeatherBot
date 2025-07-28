@@ -29,8 +29,13 @@
    git clone https://github.com/p1Relly/weatherbot.git
    cd weatherbot
 
-2. Создайте ключи в github: settings -> secrets and variables
+2. Создайте ключи в github: (settings -> secrets and variables)
    ```bash
    BOT_TOKEN
    OPENWEATHER_TOKEN
    DEPLOY_SSH_KEY
+
+3. Соберите и запустите бота:
+   ```bash
+   go build -o weatherbot .
+   ./weatherbot
