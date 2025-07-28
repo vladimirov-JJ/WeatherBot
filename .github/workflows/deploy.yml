@@ -18,7 +18,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3         # фикс для tar-warning
+        with:
+          ref: ${{ github.event.inputs.tag }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -40,18 +42,22 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > deploy_key.pem
           chmod 600 deploy_key.pem
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "mkdir -p ${{ env.DEPLOY_DIRECTORY }}"
-          rsync -avz -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' ./weatherbot ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/weatherbot
+          rsync -avz \
+            -e 'ssh -i deploy_key.pem -o StrictHostKeyChecking=no' \
+            ./weatherbot \
+            ${{ env.HOST }}:${{ env.DEPLOY_DIRECTORY }}/weatherbot
 
       - name: Upload .env file to server
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} "\
-          echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
-          echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
-          chmod 600 ${{ env.ENV_FILE_PATH }}"
+            echo 'BOT_TOKEN=${{ secrets.BOT_TOKEN }}' > ${{ env.ENV_FILE_PATH }} && \
+            echo 'OPENWEATHER_TOKEN=${{ secrets.OPENWEATHER_TOKEN }}' >> ${{ env.ENV_FILE_PATH }} && \
+            chmod 600 ${{ env.ENV_FILE_PATH }}"
 
       - name: Restart bot on server
         run: |
-          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} '
+          ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} << 'EOF'
+            cd ${{ env.DEPLOY_DIRECTORY }}
             pkill weatherbot || true
-            nohup /root/weatherbot/weatherbot > /root/weatherbot/weatherbot.log 2>&1 &
-          '
+            nohup ./weatherbot > weatherbot.log 2>&1 &
+          EOF
