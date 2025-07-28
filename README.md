@@ -18,10 +18,9 @@
 
 ## Технологии
 - Go 1.24.2+
-- [telegram-bot](github.com/go-telegram-bot-api/telegram-bot-api/v5)
-- [Requests](https://pypi.org/project/requests/) (для HTTP‑запросов к Weather API)
-- SQLite (встроенная БД)
-- `dotenv` (для работы с переменными окружения)
+- [telegram-bot](https://github.com/go-telegram-bot-api/telegram-bot-api)
+- [dotenv](https://github.com/joho/godotenv) (для работы с переменными окружения)
+- `SQLite` (встроенная БД)
 
 ## Установка и запуск
 
@@ -29,3 +28,9 @@
    ```bash
    git clone https://github.com/p1Relly/weatherbot.git
    cd weatherbot
+
+2. Создайте ключи в github: settings -> secrets and variables
+   ```bash
+   BOT_TOKEN
+   OPENWEATHER_TOKEN
+   DEPLOY_SSH_KEY
