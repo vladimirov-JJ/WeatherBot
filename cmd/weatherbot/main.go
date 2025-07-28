@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	// err := godotenv.Load("/root/weatherbot/.env")
-	err := godotenv.Load(".env")
+	err := godotenv.Load("/root/weatherbot/.env")
+	// err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -28,8 +28,8 @@ func main() {
 
 	owClient := openweather.New(os.Getenv("OPENWEATHER_TOKEN"))
 
-	// sqliteStoragePath := "/root/weatherbot/storage/storage.db"
-	sqliteStoragePath := "./storage/storage.db"
+	sqliteStoragePath := "/root/weatherbot/storage/storage.db"
+	// sqliteStoragePath := "./storage/storage.db"
 	db, err := sqlite.New(sqliteStoragePath)
 	if err != nil {
 		log.Fatalf("error storage: %s", err)
