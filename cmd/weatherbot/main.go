@@ -12,7 +12,8 @@ import (
 )
 
 func main() {
-	log := logger.SetupLogger("log/weatherbot.log")
+	loggerPath := "storage/storage.db"
+	log := logger.SetupLogger(loggerPath)
 	log.Info("Starting weatherbot")
 
 	err := godotenv.Load(".env")
