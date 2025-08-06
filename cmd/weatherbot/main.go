@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	loggerPath := "log.log"
+	loggerPath := "log/weatherbot.log"
 	log := logger.SetupLogger(loggerPath)
 	log.Info("Starting weatherbot")
 
