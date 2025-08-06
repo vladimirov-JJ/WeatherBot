@@ -101,6 +101,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 
 	case "waiting_city":
 		city := update.Message.Text
+		log.Info("TEST:", city)
 		delete(userState, chatID)
 
 		coordinates, err := h.owClient.Coordinates(city)

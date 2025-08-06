@@ -1,0 +1,13 @@
+INFO:	2025/08/06 18:07:41 logger.go:14: Starting weatherbot
+INFO:	2025/08/06 18:07:41 logger.go:14: Loading .env file
+INFO:	2025/08/06 18:07:41 logger.go:14: Connected TGBotAPI
+INFO:	2025/08/06 18:07:41 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/08/06 18:07:41 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/08/06 18:07:41 logger.go:14: Loading storage
+INFO:	2025/08/06 18:09:01 logger.go:14: Starting weatherbot
+INFO:	2025/08/06 18:09:01 logger.go:14: Loading .env file
+INFO:	2025/08/06 18:09:01 logger.go:14: Connected TGBotAPI
+INFO:	2025/08/06 18:09:01 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/08/06 18:09:01 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/08/06 18:09:01 logger.go:14: Loading storage
+INFO:	2025/08/06 18:09:11 logger.go:14: TEST: Барнаул
