@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	log := logger.SetupLogger("./log/weatherbot.log")
+	log := logger.SetupLogger("log/weatherbot.log")
 	log.Info("Starting weatherbot")
 
 	err := godotenv.Load(".env")
