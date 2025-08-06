@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to deploy'
-        required: true
+        description: 'Branch or tag to deploy'
+        required: false
+        default: 'main'
 
 jobs:
   deploy:
@@ -18,14 +19,18 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.event.inputs.tag }}
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: 1.21
+
+      - name: Build binary
+        run: go build -o weatherbot ./cmd/weatherbot
 
       - name: Build binary
         run: go build -o weatherbot ./cmd/weatherbot
