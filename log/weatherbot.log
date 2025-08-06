@@ -1,6 +1,0 @@
-INFO:	2025/08/06 18:26:58 logger.go:14: Starting weatherbot
-INFO:	2025/08/06 18:26:58 logger.go:14: Loading .env file
-INFO:	2025/08/06 18:26:59 logger.go:14: Connected TGBotAPI
-INFO:	2025/08/06 18:26:59 logger.go:14: Authorized on account: weather_from_name_debag_bot
-INFO:	2025/08/06 18:26:59 logger.go:14: Connected OpenweatherAPI
-INFO:	2025/08/06 18:26:59 logger.go:14: Loading storage
