@@ -9,12 +9,13 @@ import (
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/p1relly/weatherbot/internal/formatter"
+	"github.com/p1relly/weatherbot/internal/logger"
 	"github.com/p1relly/weatherbot/internal/openweather"
 )
 
 var userState = make(map[int64]string)
 
-func (h *Handler) CallbackQuery(update tgbotapi.Update) {
+func (h *Handler) CallbackQuery(log *logger.Logger, update tgbotapi.Update) {
 	callback := update.CallbackQuery
 	chatID := callback.Message.Chat.ID
 	data := callback.Data
@@ -38,6 +39,7 @@ func (h *Handler) CallbackQuery(update tgbotapi.Update) {
 		drone, err := h.db.ListDrone(update.CallbackQuery.From.ID)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения списка БВС"))
+			log.Error("error list drone:", err, chatID)
 			break
 		}
 
@@ -87,7 +89,7 @@ func (h *Handler) CallbackQuery(update tgbotapi.Update) {
 	h.bot.Request(tgbotapi.NewCallback(update.CallbackQuery.ID, ""))
 }
 
-func (h *Handler) Callback(update tgbotapi.Update) {
+func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 	if update.CallbackQuery != nil {
 		return
 	}
@@ -102,12 +104,18 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 		delete(userState, chatID)
 
 		coordinates, err := h.owClient.Coordinates(city)
-		if err != nil || city == "/start" {
+		if city == "/start" {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения города"))
 			break
 		}
 
-		h.Message(chatID, userID, coordinates.Lat, coordinates.Lon)
+		if err != nil {
+			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения города"))
+			log.Error("error get city:", err, chatID)
+			break
+		}
+
+		h.Message(log, chatID, userID, coordinates.Lat, coordinates.Lon)
 
 	case "waiting_location":
 		location := update.Message.Location
@@ -118,7 +126,7 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 			break
 		}
 
-		h.Message(chatID, userID, location.Latitude, location.Longitude)
+		h.Message(log, chatID, userID, location.Latitude, location.Longitude)
 
 	case "waiting_drone_add":
 		delete(userState, chatID)
@@ -133,12 +141,14 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 		weight, err := strconv.Atoi(strings.TrimSpace(input[1]))
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения веса"))
+			log.Error("error get weight:", err, chatID)
 			break
 		}
 
 		result, err := h.db.SaveDrone(userID, nameDrone, weight)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка добавления БВС, возможно, такой уже существует"))
+			log.Error("error save drone:", err, chatID)
 			return
 		}
 
@@ -153,6 +163,7 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 		droneID, err := strconv.Atoi(input)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения ID"))
+			log.Error("error get ID", err, chatID)
 			return
 		}
 
@@ -164,6 +175,7 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 		result, err := h.db.DeleteDrone(userID, droneID)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка удаления БВС"))
+			log.Error("erre delete drone:", err, chatID)
 			h.droneMenu(chatID)
 			return
 		}
@@ -176,10 +188,11 @@ func (h *Handler) Callback(update tgbotapi.Update) {
 	h.mainMenu(chatID)
 }
 
-func (h *Handler) DroneRecommendations(chatID, userID int64, text *string, weather *openweather.WeatherResponse) {
+func (h *Handler) DroneRecommendations(log *logger.Logger, chatID, userID int64, text *string, weather *openweather.WeatherResponse) {
 	drone, err := h.db.ListDrone(userID)
 	if err != nil {
 		h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения списка БВС"))
+		log.Error("error list drone:", err, chatID)
 		return
 	}
 
@@ -195,16 +208,17 @@ func (h *Handler) DroneRecommendations(chatID, userID int64, text *string, weath
 	}
 }
 
-func (h *Handler) Message(chatID, userID int64, Lat, Lon float64) {
+func (h *Handler) Message(log *logger.Logger, chatID, userID int64, Lat, Lon float64) {
 	weather, err := h.owClient.Weather(Lat, Lon)
 	if err != nil {
 		h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения погоды"))
+		log.Error("error get weather:", err, chatID)
 		return
 	}
 
 	text := formatter.MessageWeather(weather)
 
-	h.DroneRecommendations(chatID, userID, &text, &weather)
+	h.DroneRecommendations(log, chatID, userID, &text, &weather)
 
 	msg := tgbotapi.NewMessage(chatID, text)
 	msg.ParseMode = "Markdown"
