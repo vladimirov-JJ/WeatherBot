@@ -39,7 +39,7 @@ func (h *Handler) CallbackQuery(log *logger.Logger, update tgbotapi.Update) {
 		drone, err := h.db.ListDrone(update.CallbackQuery.From.ID)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения списка БВС"))
-			log.Error("error list drone:", err, chatID)
+			log.Error("error list drone:", err)
 			break
 		}
 
@@ -101,7 +101,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 
 	case "waiting_city":
 		city := update.Message.Text
-		log.Info("TEST:", city)
+		log.Info("chatID:", chatID, "input:", city)
 		delete(userState, chatID)
 
 		coordinates, err := h.owClient.Coordinates(city)
@@ -112,7 +112,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения города"))
-			log.Error("error get city:", err, chatID)
+			log.Error("error get city:", err)
 			break
 		}
 
@@ -135,6 +135,8 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 		input := strings.Split(update.Message.Text, ",")
 		if len(input) != 2 {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения данных"))
+			log.Error("error get data drone_add: len(input) != 2")
+			log.Error("input text:", update.Message.Text)
 			break
 		}
 
@@ -142,14 +144,15 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 		weight, err := strconv.Atoi(strings.TrimSpace(input[1]))
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения веса"))
-			log.Error("error get weight:", err, chatID)
+			log.Error("error get weight:", err)
+			log.Error("weight:", weight)
 			break
 		}
 
 		result, err := h.db.SaveDrone(userID, nameDrone, weight)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка добавления БВС, возможно, такой уже существует"))
-			log.Error("error save drone:", err, chatID)
+			log.Error("error save drone:", err)
 			return
 		}
 
@@ -164,7 +167,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 		droneID, err := strconv.Atoi(input)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения ID"))
-			log.Error("error get ID", err, chatID)
+			log.Error("error get ID", err)
 			return
 		}
 
@@ -176,7 +179,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 		result, err := h.db.DeleteDrone(userID, droneID)
 		if err != nil {
 			h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка удаления БВС"))
-			log.Error("erre delete drone:", err, chatID)
+			log.Error("erre delete drone:", err)
 			h.droneMenu(chatID)
 			return
 		}
@@ -193,7 +196,7 @@ func (h *Handler) DroneRecommendations(log *logger.Logger, chatID, userID int64,
 	drone, err := h.db.ListDrone(userID)
 	if err != nil {
 		h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения списка БВС"))
-		log.Error("error list drone:", err, chatID)
+		log.Error("error list drone:", err)
 		return
 	}
 
@@ -213,7 +216,7 @@ func (h *Handler) Message(log *logger.Logger, chatID, userID int64, Lat, Lon flo
 	weather, err := h.owClient.Weather(Lat, Lon)
 	if err != nil {
 		h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения погоды"))
-		log.Error("error get weather:", err, chatID)
+		log.Error("error get weather:", err)
 		return
 	}
 
