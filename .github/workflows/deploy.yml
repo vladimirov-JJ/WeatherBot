@@ -63,6 +63,7 @@ jobs:
         run: |
           ssh -i deploy_key.pem -o StrictHostKeyChecking=no ${{ env.HOST }} << 'EOF'
             cd ${{ env.DEPLOY_DIRECTORY }}
+            mkdir -p log
             pkill weatherbot || true
             nohup ./weatherbot > weatherbot.log 2>&1 &
           EOF
