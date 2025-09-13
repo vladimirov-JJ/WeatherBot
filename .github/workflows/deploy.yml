@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      HOST: root@77.105.167.117
+      HOST: root@109.107.190.28
       DEPLOY_DIRECTORY: /root/weatherbot
       ENV_FILE_PATH: /root/weatherbot/.env
 
