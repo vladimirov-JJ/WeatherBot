@@ -98,7 +98,6 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 	userID := update.Message.From.ID
 
 	switch userState[chatID] {
-
 	case "waiting_city":
 		city := update.Message.Text
 		log.Info("chatID:", chatID, "input:", city)
