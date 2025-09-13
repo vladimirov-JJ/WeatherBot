@@ -63,3 +63,11 @@ INFO:	2025/09/13 14:49:26 logger.go:14: Loading storage
 INFO:	2025/09/13 14:49:38 logger.go:14: waiting_drone_add: chatID: 503658851 contact: @ivanvladimirov: Добавлен БВС: test (1гр)
 INFO:	2025/09/13 14:50:26 logger.go:14: waiting_drone_delete: chatID: 503658851 contact: @ivanvladimirov: Удалён БВС: test (1гр)
 INFO:	2025/09/13 14:52:21 logger.go:14: waiting_drone_add: chatID: 503658851 contact: @ivanvladimirov: Добавлен БВС: tets (1гр)
+INFO:	2025/09/13 14:54:05 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:54:05 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:54:05 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:54:05 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:54:05 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:54:05 logger.go:14: Loading storage
+ERROR:	2025/09/13 14:54:21 logger.go:18: erre delete drone: storage.sqlite.DeleteDrone: QueryRow: sql: no rows in result set
+INFO:	2025/09/13 14:54:26 logger.go:14: waiting_drone_delete: chatID: 503658851 contact: @ivanvladimirov: Удалён БВС: tets (1гр)
