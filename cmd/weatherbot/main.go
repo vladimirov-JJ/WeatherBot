@@ -43,7 +43,7 @@ func main() {
 		os.Exit(1)
 	}
 	log.Info("Loading storage")
-	// defer dbb.Close()
+	// defer db.Close()
 
 	botHandler := handler.New(bot, owClient, db)
 

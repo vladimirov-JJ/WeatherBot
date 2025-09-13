@@ -4,3 +4,62 @@ INFO:	2025/09/13 13:53:22 logger.go:14: Connected TGBotAPI
 INFO:	2025/09/13 13:53:22 logger.go:14: Authorized on account: weather_from_name_debag_bot
 INFO:	2025/09/13 13:53:22 logger.go:14: Connected OpenweatherAPI
 INFO:	2025/09/13 13:53:22 logger.go:14: Loading storage
+INFO:	2025/09/13 14:32:04 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:32:04 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:32:05 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:32:05 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:32:05 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:32:05 logger.go:14: Loading storage
+INFO:	2025/09/13 14:32:08 logger.go:14: waiting_city: chatID: 503658851 userID: 503658851 input: Барнаул
+INFO:	2025/09/13 14:32:08 logger.go:14: Message: chatID: 503658851 userID: get weather from city: Barnaul
+INFO:	2025/09/13 14:35:45 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:35:45 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:35:45 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:35:45 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:35:45 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:35:45 logger.go:14: Loading storage
+INFO:	2025/09/13 14:35:50 logger.go:14: waiting_city: chatID: 503658851 contact: Ivan Vladimirov 503658851 input: барнаул
+INFO:	2025/09/13 14:35:50 logger.go:14: Message: chatID: 503658851 userID: get weather from city: Barnaul
+INFO:	2025/09/13 14:36:47 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:36:47 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:36:47 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:36:47 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:36:47 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:36:47 logger.go:14: Loading storage
+INFO:	2025/09/13 14:36:49 logger.go:14: waiting_city: chatID: 503658851 contact: ivanvladimirov Ivan Vladimirov input data: Барнау
+INFO:	2025/09/13 14:36:49 logger.go:14: Message: chatID: 503658851 userID: get weather from city: Bärnau
+INFO:	2025/09/13 14:38:59 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:38:59 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:39:00 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:39:00 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:39:00 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:39:00 logger.go:14: Loading storage
+INFO:	2025/09/13 14:39:18 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:39:18 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:39:18 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:39:18 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:39:18 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:39:18 logger.go:14: Loading storage
+INFO:	2025/09/13 14:39:25 logger.go:14: waiting_city: chatID: 503658851 contact: @ivanvladimirov: Ivan Vladimirov input data: барнаул
+INFO:	2025/09/13 14:39:25 logger.go:14: Message: chatID: 503658851 userID: get weather from city: Barnaul
+INFO:	2025/09/13 14:44:53 logger.go:14: waiting_city: chatID: 503658851 contact: @ivanvladimirov: Ivan Vladimirov input data: Барнаул
+INFO:	2025/09/13 14:44:53 logger.go:14: Message: chatID: 503658851 userID: get weather from city: Barnaul
+INFO:	2025/09/13 14:44:58 logger.go:14: Message: chatID: 503658851 userID: get weather from city: Amsterdam
+INFO:	2025/09/13 14:45:39 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:45:39 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:45:39 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:45:39 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:45:39 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:45:39 logger.go:14: Loading storage
+INFO:	2025/09/13 14:45:40 logger.go:14: waiting_city: chatID: 503658851 contact: @ivanvladimirov input data: Барнаул
+INFO:	2025/09/13 14:45:40 logger.go:14: message: chatID: 503658851 contact: @ivanvladimirov get weather from city: Barnaul
+INFO:	2025/09/13 14:46:48 logger.go:14: message: chatID: 503658851 contact: @ivanvladimirov get weather from city: Amsterdam
+INFO:	2025/09/13 14:49:26 logger.go:14: Starting weatherbot
+INFO:	2025/09/13 14:49:26 logger.go:14: Loading .env file
+INFO:	2025/09/13 14:49:26 logger.go:14: Connected TGBotAPI
+INFO:	2025/09/13 14:49:26 logger.go:14: Authorized on account: weather_from_name_debag_bot
+INFO:	2025/09/13 14:49:26 logger.go:14: Connected OpenweatherAPI
+INFO:	2025/09/13 14:49:26 logger.go:14: Loading storage
+INFO:	2025/09/13 14:49:38 logger.go:14: waiting_drone_add: chatID: 503658851 contact: @ivanvladimirov: Добавлен БВС: test (1гр)
+INFO:	2025/09/13 14:50:26 logger.go:14: waiting_drone_delete: chatID: 503658851 contact: @ivanvladimirov: Удалён БВС: test (1гр)
+INFO:	2025/09/13 14:52:21 logger.go:14: waiting_drone_add: chatID: 503658851 contact: @ivanvladimirov: Добавлен БВС: tets (1гр)

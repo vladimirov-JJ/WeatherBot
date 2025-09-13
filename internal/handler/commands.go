@@ -72,8 +72,28 @@ func (h *Handler) CallbackQuery(log *logger.Logger, update tgbotapi.Update) {
 		userState[chatID] = "waiting_drone_add"
 
 	case data == "drone_delete":
-		h.bot.Send(tgbotapi.NewMessage(chatID, "Введи ID БВС, который нужно удалить:\n(\"-1\", если хочешь отменить действие)"))
+		drone, _ := h.db.ListDrone(update.CallbackQuery.From.ID)
+
+		if len(drone) == 0 {
+			h.bot.Send(tgbotapi.NewMessage(chatID, "У Вас еще нет ни одного БВС"))
+			h.mainMenu(chatID)
+			break
+		}
+
+		var rows [][]tgbotapi.InlineKeyboardButton
+		for _, d := range drone {
+			title := fmt.Sprintf("[ID:%d] %s (%dгр)", d.ID, d.Name, d.Weight)
+			data := fmt.Sprintf("drone_edit_%d", d.ID)
+			btn := tgbotapi.NewInlineKeyboardButtonData(title, data)
+			rows = append(rows, tgbotapi.NewInlineKeyboardRow(btn))
+		}
+
+		markup := tgbotapi.NewInlineKeyboardMarkup(rows...)
+
+		msg := tgbotapi.NewMessage(chatID, "Введи ID БВС, который нужно удалить:\n(\"-1\", если хочешь отменить действие)")
 		userState[chatID] = "waiting_drone_delete"
+		msg.ReplyMarkup = markup
+		h.bot.Send(msg)
 
 	case strings.HasPrefix(data, "copy_coords:"):
 		coords := strings.TrimPrefix(data, "copy_coords:")
@@ -96,11 +116,11 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 
 	chatID := update.Message.Chat.ID
 	userID := update.Message.From.ID
+	contact := update.Message.From
 
 	switch userState[chatID] {
 	case "waiting_city":
 		city := update.Message.Text
-		log.Info("chatID:", chatID, "input:", city)
 		delete(userState, chatID)
 
 		coordinates, err := h.owClient.Coordinates(city)
@@ -115,7 +135,8 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 			break
 		}
 
-		h.Message(log, chatID, userID, coordinates.Lat, coordinates.Lon)
+		log.Info("waiting_city: chatID:", chatID, fmt.Sprintf("contact: @%s", contact.UserName), "input data:", city)
+		h.Message(log, chatID, userID, contact, coordinates.Lat, coordinates.Lon)
 
 	case "waiting_location":
 		location := update.Message.Location
@@ -126,7 +147,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 			break
 		}
 
-		h.Message(log, chatID, userID, location.Latitude, location.Longitude)
+		h.Message(log, chatID, userID, contact, location.Latitude, location.Longitude)
 
 	case "waiting_drone_add":
 		delete(userState, chatID)
@@ -155,6 +176,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 			return
 		}
 
+		log.Info("waiting_drone_add: chatID:", chatID, fmt.Sprintf("contact: @%s:", contact.UserName), result)
 		h.bot.Send(tgbotapi.NewMessage(chatID, result))
 		h.droneMenu(chatID)
 		return
@@ -183,6 +205,7 @@ func (h *Handler) Callback(log *logger.Logger, update tgbotapi.Update) {
 			return
 		}
 
+		log.Info("waiting_drone_delete: chatID:", chatID, fmt.Sprintf("contact: @%s:", contact.UserName), result)
 		h.bot.Send(tgbotapi.NewMessage(chatID, result))
 		h.droneMenu(chatID)
 		return
@@ -211,7 +234,7 @@ func (h *Handler) DroneRecommendations(log *logger.Logger, chatID, userID int64,
 	}
 }
 
-func (h *Handler) Message(log *logger.Logger, chatID, userID int64, Lat, Lon float64) {
+func (h *Handler) Message(log *logger.Logger, chatID, userID int64, contact *tgbotapi.User, Lat, Lon float64) {
 	weather, err := h.owClient.Weather(Lat, Lon)
 	if err != nil {
 		h.bot.Send(tgbotapi.NewMessage(chatID, "Ошибка получения погоды"))
@@ -235,6 +258,7 @@ func (h *Handler) Message(log *logger.Logger, chatID, userID int64, Lat, Lon flo
 		),
 	)
 
+	log.Info("Message: chatID:", chatID, fmt.Sprintf("contact: @%s", contact.UserName), "get weather from city:", weather.Name, weather.Sys.Country)
 	h.bot.Send(msg)
 }
 
